@@ -122,12 +122,45 @@
   }
   nav.links a:hover, nav.links a:focus-visible{color:var(--chile); border-color:var(--chile);}
   .call-btn{
+    display:inline-flex; align-items:center; gap:8px;
     background:var(--chile); color:#fff; font-weight:800; font-size:.82rem;
     padding:9px 16px; border-radius:999px; text-decoration:none; white-space:nowrap;
-    box-shadow:0 2px 0 rgba(var(--shadow),.25);
+    box-shadow:0 2px 0 rgba(var(--shadow),.25); flex:none;
   }
   .call-btn:hover{background:var(--chile-deep);}
+  .call-btn svg{width:15px;height:15px; fill:#fff; flex:none;}
   :focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+
+  .nav-toggle{
+    display:none; width:40px; height:40px; flex:none;
+    align-items:center; justify-content:center;
+    background:none; border:2px solid var(--ink); border-radius:9px; cursor:pointer;
+    padding:0;
+  }
+  .nav-toggle svg{width:19px; height:19px; fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round;}
+  .nav-toggle .icon-close{display:none;}
+  .nav-toggle[aria-expanded="true"] .icon-open{display:none;}
+  .nav-toggle[aria-expanded="true"] .icon-close{display:block;}
+
+  @media (max-width:860px){
+    .nav-row{flex-wrap:nowrap; gap:10px;}
+    .brand{font-size:.92rem;}
+    .nav-toggle{display:flex;}
+    nav.links{
+      display:flex; flex-direction:column; gap:0; flex-wrap:nowrap;
+      position:absolute; top:100%; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden; visibility:hidden;
+      transition:max-height .28s ease;
+    }
+    nav.links.open{max-height:420px; visibility:visible;}
+    nav.links a{
+      padding:15px clamp(18px,4vw,48px); border-bottom:1px solid var(--line);
+      border-left:3px solid transparent;
+    }
+    nav.links a:hover, nav.links a:focus-visible{border-left-color:var(--chile); border-bottom-color:var(--line);}
+    .call-btn .call-label{display:none;}
+  }
 
   /* ---------- hero ---------- */
   .hero{padding:clamp(36px,7vw,72px) 0 48px;}
@@ -305,7 +338,11 @@
 <header class="nav">
   <div class="nav-row">
     <div class="brand"><span class="dot"></span>FG&nbsp;RESTAURANT</div>
-    <nav class="links">
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu">
+      <svg class="icon-open" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <nav class="links" id="navLinks">
       <a href="#gallery">Gallery</a>
       <a href="#favorites">Menu</a>
       <a href="#hours">Hours</a>
@@ -313,7 +350,10 @@
       <a href="#reviews">Reviews</a>
       <a href="#visit">Visit</a>
     </nav>
-    <a class="call-btn" href="tel:+19093653237">Call (909) 365-3237</a>
+    <a class="call-btn" href="tel:+19093653237">
+      <svg viewBox="0 0 24 24"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6a1 1 0 0 0-1 .2l-2.2 2.2a15 15 0 0 1-6.6-6.6l2.2-2.2a1 1 0 0 0 .2-1A11.4 11.4 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1Z"/></svg>
+      <span class="call-label">Call (909) 365-3237</span>
+    </a>
   </div>
 </header>
 
@@ -542,6 +582,21 @@
     document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
   } else {
     document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
+  }
+
+  var toggle = document.getElementById("navToggle");
+  var links = document.getElementById("navLinks");
+  if(toggle && links){
+    toggle.addEventListener("click", function(){
+      var open = links.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    links.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click", function(){
+        links.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
   }
 })();
 </script>
