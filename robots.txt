@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rh-28.github.io/FG-restaurant/sitemap.xml
